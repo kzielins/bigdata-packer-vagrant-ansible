@@ -12,8 +12,8 @@
     },
     {
       "type": "ansible-local",
-      "playbook_file": "ansible/main.yml",
-      "galaxy_file": "requirements.yml"
+      "playbook_file": "ansible/ubuntu/main.yml",
+      "galaxy_file": "ansible/requirements.yml"
     },
     {
       "type": "shell",
@@ -46,43 +46,34 @@
         " netcfg/get_hostname=vagrant<wait>",
         " grub-installer/bootdev=/dev/sda<wait>",
         " noapic<wait>",
-        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-16.04/preseed.cfg",
         " -- <wait>",
         "<enter><wait>"
       ],
       "boot_wait": "10s",
-      "disk_size": 81920,
+      "disk_size": "{{user `disk_size`}}",
       "guest_os_type": "Ubuntu_64",
-      "headless": true,
+      "headless": "{{user `headless`}}",
       "http_directory": "http",
       "iso_urls": [
-        "http://releases.ubuntu.com/releases/16.04.4/ubuntu-16.04.4-server-amd64.iso",
+        "{{user `mirror`}}/releases/16.04.4/ubuntu-16.04.4-server-amd64.iso",
         "iso/ubuntu-16.04.4-server-amd64.iso",
         "http://releases.ubuntu.com/16.04/ubuntu-16.04.4-server-amd64.iso"
       ],
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "0a03608988cfd2e50567990dc8be96fb3c501e198e2e6efcb846d89efc7b89f2",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
+      "ssh_wait_timeout": "{{user `ssh_timeout`}}",
       "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
       "virtualbox_version_file": ".vbox_version",
-      "vm_name": "packer-ubuntu-16.04-amd64-v2",
+      "vm_name": "packer-ubuntu-16.04-amd64",
       "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "1024"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "1"
-        ]
+      ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+      ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"]
       ]
     },
     {
@@ -109,41 +100,56 @@
         " netcfg/get_hostname=vagrant<wait>",
         " grub-installer/bootdev=/dev/sda<wait>",
         " noapic<wait>",
-        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ubuntu-16.04/preseed.cfg",
         " -- <wait>",
         "<enter><wait>"
       ],
       "boot_wait": "10s",
-      "disk_size": 81920,
+      "disk_size": "{{user `disk_size`}}",
       "guest_os_type": "ubuntu-64",
-      "headless": true,
+      "headless": "{{user `headless`}}",
       "http_directory": "http",
       "iso_urls": [
-        "http://releases.ubuntu.com/releases/16.04.4/ubuntu-16.04.4-server-amd64.iso",
+        "{{user `mirror`}}/releases/16.04.4/ubuntu-16.04.4-server-amd64.iso",
         "iso/ubuntu-16.04.3-server-amd64.iso",
         "http://releases.ubuntu.com/16.04/ubuntu-16.04.3-server-amd64.iso"
       ],
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "0a03608988cfd2e50567990dc8be96fb3c501e198e2e6efcb846d89efc7b89f2",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "packer-ubuntu-16.04-amd64-vmware",
       "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
       "ssh_password": "vagrant",
       "ssh_port": 22,
       "ssh_username": "vagrant",
-      "ssh_wait_timeout": "10000s",
+      "ssh_timeout": "{{user `ssh_timeout`}}",
+      "ssh_wait_timeout": "{{user `ssh_timeout`}}",
       "tools_upload_flavor": "linux",
       "vm_name": "packer-ubuntu-16.04-amd64",
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
-        "memsize": "1024",
-        "numvcpus": "1"
+        "memsize": "{{user `memory`}}",
+        "numvcpus": "{{user `cpus`}}"
       }
     }
   ],
   "post-processors": [
     {
-      "output": "builds/{{.Provider}}-ubuntu-16.04-amd64.box",
+      "output": "builds/ubuntu-16.04-amd64-{{.Provider}}.box",
+      "compression_level": "{{user `compression_level`}}",
       "type": "vagrant"
     }
-  ]
+  ],
+  "variables": {
+    "compression_level": "6",
+    "cpus": "1",
+    "disk_size": "40000",
+    "headless": "true",
+    "iso_checksum": "0a03608988cfd2e50567990dc8be96fb3c501e198e2e6efcb846d89efc7b89f2",
+    "iso_checksum_type": "sha256",
+    "memory": "512",
+    "mirror": "http://releases.ubuntu.com",
+    "ssh_timeout": "60m"
+  }
+
+
 }

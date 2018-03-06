@@ -16,6 +16,13 @@ Choosen configuration
 - Centos TODO
 
 ## Build image using Packer and Ansible
+
+
+Build ubuntu-16.04-amd64git
+```
+  packer build ubuntu-16.04-amd64.json
+``` 
+
 ### Build automation via CircleCI and Vagrant boxes and Atlas
 According tutorial:
  https://stefanscherer.github.io/automate-building-vagrant-boxes-with-atlas/
