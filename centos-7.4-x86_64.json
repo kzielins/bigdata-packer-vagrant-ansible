@@ -94,7 +94,7 @@
   "post-processors": [{
     "type": "vagrant",
     "compression_level": "{{user `compression_level`}}",
-    "output": "centos-7.4-x86_64-{{.Provider}}.box"
+    "output": "builds/centos-7.4-x86_64-{{.Provider}}.box"
   }],
   "variables": {
     "compression_level": "6",
