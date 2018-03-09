@@ -95,7 +95,18 @@
     "type": "vagrant",
     "compression_level": "{{user `compression_level`}}",
     "output": "builds/centos-7.4-x86_64-{{.Provider}}.box"
-  }],
+  },
+    {
+      "type": "atlas",
+      "only": ["virtualbox-iso"],
+      "artifact": "kzielins/centos-7.4-x86_64",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "provider": "{{.Provider}}",
+        "version": "0.0.1"
+      }
+    }
+  ],
   "variables": {
     "compression_level": "6",
     "cpus": "1",

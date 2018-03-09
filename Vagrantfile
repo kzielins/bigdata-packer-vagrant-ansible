@@ -7,13 +7,13 @@ Vagrant.configure('2') do |config|
     name = template.basename('.json').to_s
     escaped_name = name.gsub(/[.]/, '_')
 
-    config.vm.define "#{escaped_name}-libvirt" do |c|
-      c.vm.box = name
-
-      c.vm.provider :libvirt do |v, override|
-        override.vm.synced_folder '', '/vagrant', disabled: true
-      end
-    end
+    #config.vm.define "#{escaped_name}-libvirt" do |c|
+    #  c.vm.box = name
+    #
+    #  c.vm.provider :libvirt do |v, override|
+    #    override.vm.synced_folder '', '/vagrant', disabled: true
+    #  end
+    #end
 
     config.vm.define "#{escaped_name}-virtualbox" do |c|
       c.vm.box = "builds/#{name}"
