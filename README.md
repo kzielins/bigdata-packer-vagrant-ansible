@@ -28,11 +28,11 @@ The following software must be installed/present on your local machine before yo
 
 Build ubuntu-16.04-amd64 
 
-    packer build ubuntu-16.04-amd64.json -only TODO
+    packer.io build ubuntu-16.04-amd64.json --only=virtualbox-iso
 
 Build centos-7.4-amd64 
 
-    packer build centos-7.4-amd64.json -only TODO
+    packer.io build centos-7.4-amd64.json --only=vmware-iso
 
 Make sure all the required software (listed above) is installed, then cd to the directory containing this README.md file, and run:
 
@@ -40,7 +40,7 @@ After a few minutes, Packer should tell you the box was generated successfully.
 
 If you want to only build a box for one of the supported virtualization platforms (e.g. only build the VMware box), add `--only=vmware-iso` to the `packer build` command:
 
-    $ packer build --only=vmware-iso debian8.json
+    $ packer.io build ubuntu-16.04-amd64.json
 
 ## Testing built boxes
 
@@ -57,7 +57,7 @@ There's an included Vagrantfile that allows quick testing of the built Vagrant b
 
 - download prebuilded
 
-     vagrant init geerlingguy/ubuntu1604
+     vagrant init kzielins/centos-7.4-x86_64
      https://vagrantcloud.com/geerlingguy/boxes/ubuntu1604
 
 - See older versions: http://files.midwesternmac.com/
