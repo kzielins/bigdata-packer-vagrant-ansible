@@ -1,0 +1,49 @@
+machine:
+  environment:
+    PATH: "${HOME}/bin:/${HOME}/vagrant/bin:${PATH}"
+    PACKER_URL: "https://releases.hashicorp.com/packer/1.2.1/packer_1.2.1_linux_amd64.zip"
+    PACKER_SHA256SUM: "dd90f00b69c4d8f88a8d657fff0bb909c77ebb998afd1f77da110bc05e2ed9c3"
+    VAGRANT_URL: "https://releases.hashicorp.com/vagrant/1.8.1/vagrant_1.8.1_x86_64.deb"
+    VAGRANT_SHA256SUM: "ed0e1ae0f35aecd47e0b3dfb486a230984a08ceda3b371486add4d42714a693d"
+
+dependencies:
+  cache_directories:
+    - "~/vagrant"
+    - "~/bin"
+  pre:
+    - sudo apt-get update; sudo apt-get -y install jq curl unzip git;
+  override:
+    - |
+      if [ ! -d "${HOME}/vagrant" ]; then
+        curl -Lo vagrant.deb "${VAGRANT_URL}"
+        sha256sum vagrant.deb
+        echo "${VAGRANT_SHA256SUM}  vagrant.deb" | sha256sum -c || exit $?
+        sudo dpkg -i vagrant.deb
+        cp -aR /opt/vagrant "${HOME}/vagrant"
+      fi
+    - vagrant version
+    - |
+      if [ ! -e "${HOME}/bin/packer" ]; then
+        curl -Lo packer.zip "${PACKER_URL}"
+        echo "${PACKER_SHA256SUM}  packer.zip" | sha256sum -c || exit $?
+        unzip -d ~/bin packer.zip
+      fi
+    - packer version
+
+test:
+  override:
+    - #sh -n http/installerconfig
+    - find scripts -name '*.sh' -print0 | xargs -0 sh -n
+    - #cp vagrantfile.template Vagrantfile
+    - vagrant version
+    - packer validate ubuntu-16.04-amd64.json
+    - packer validate centos-7.4-x86_64.json
+
+deployment:
+  release:
+    tag: /[0-9]+\.[0-9]+\.[0-9]+/
+    commands:
+      - cp ubuntu-16.04-amd64.json ubuntu-16.04-amd64.json.orig
+      - jq ".variables.version = \"${CIRCLE_TAG}\"" ubuntu-16.04-amd64.json.orig > ubuntu-16.04-amd64.json
+      - "diff -uB ubuntu-16.04-amd64.json{.orig,} || :"
+      - packer push ubuntu-16.04-amd64.json
