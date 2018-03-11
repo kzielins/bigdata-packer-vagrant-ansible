@@ -46,4 +46,4 @@ deployment:
       - cp ubuntu-16.04-amd64.json ubuntu-16.04-amd64.json.orig
       - jq ".variables.version = \"${CIRCLE_TAG}\"" ubuntu-16.04-amd64.json.orig > ubuntu-16.04-amd64.json
       - "diff -uB ubuntu-16.04-amd64.json{.orig,} || :"
-      - packer push ubuntu-16.04-amd64.json
+      - packer push -name=kzielins/ubuntu-16.04-amd64 ubuntu-16.04-amd64.json

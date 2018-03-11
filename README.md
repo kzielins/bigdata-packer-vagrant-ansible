@@ -18,29 +18,39 @@ Choosen configuration
 
 The following software must be installed/present on your local machine before you can use Packer to build the Vagrant box file:
 
-  - [Packer](http://www.packer.io/)
+  - [Packer](http://www.packer.io/) 
   - [Vagrant](http://vagrantup.com/)
   - [VirtualBox](https://www.virtualbox.org/) (if you want to build the VirtualBox box)
   - [VMware Fusion](http://www.vmware.com/products/fusion/) (or Workstation - if you want to build the VMware box)
   - [Ansible](http://docs.ansible.com/intro_installation.html)
+  - [Atlas account] (https://app.vagrantup.com/settings/security) with exported ATLAS_TOKEN=token
 
 ## Usage - Build image using Packer and Ansible
 
+    packer build ubuntu-16.04-amd64.json
+    packer build centos-7.4-amd64.json
+
+If you want to only build a box for one of the supported virtualization platforms (e.g. only build the VMware box), add `--only=vmware-iso` to the `packer build` command:
+
 Build ubuntu-16.04-amd64 
 
-    packer.io build ubuntu-16.04-amd64.json --only=virtualbox-iso
+    # For VirtualBox:
+    packer build --only=virtualbox-iso ubuntu-16.04-amd64.json 
+    # For VMware Fusion:
+    packer build --only=vmware-iso ubuntu-16.04-amd64.json 
 
 Build centos-7.4-amd64 
 
-    packer.io build centos-7.4-amd64.json --only=vmware-iso
+    # For VirtualBox:
+    packer build --only=virtualbox-iso centos-7.4-amd64.json 
+    # For VMware Fusion:
+    packer build --only=vmware-iso centos-7.4-amd64.json 
 
 Make sure all the required software (listed above) is installed, then cd to the directory containing this README.md file, and run:
 
 After a few minutes, Packer should tell you the box was generated successfully.
 
-If you want to only build a box for one of the supported virtualization platforms (e.g. only build the VMware box), add `--only=vmware-iso` to the `packer build` command:
 
-    $ packer.io build ubuntu-16.04-amd64.json
 
 ## Testing built boxes
 
